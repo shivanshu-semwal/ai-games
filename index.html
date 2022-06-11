@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <title>AI Games</title>
+    <style>
+        body {
+            min-height: 100vh;
+        }
+
+        .pic ul li {
+            list-style: none;
+            flex-basis: 200px;
+        }
+
+        .pic ul li a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pic img {
+            width: 100px;
+            height: 100px;
+            box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.19);
+            border-radius: 10px
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column">
+
+    <div>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container">
+                    <a class="navbar-brand" href="./index.html">AI Games</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="./index.html">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./about.html">About</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    </div>
+
+    <div class="flex-grow-1">
+        <div class="container p-4">
+            <div>
+                <h1>Artificial Intelligence</h1>
+                <p>
+                    AI is when intelligence is demonstrated by machines.
+                    Here are some games in which there is some form of intelligence associated:
+                <div class="pic">
+                    <ul class="d-flex flex-wrap flex-row">
+                        <li class="p-4 m-1 border rounded">
+                            <a href="./tic-tac-toe/index.html">
+                                <h4>Tic-tac-toe</h4>
+                                <img src="./img/tictactoe.png" alt="">
+                            </a>
+                        </li>
+                        <li class="p-4 m-1 border rounded">
+                            <a href="./telris/index.html">
+                                <h4>Tetris</h4>
+                                <img src="./img/tetris.png" alt="">
+                            </a>
+                        </li>
+                        <li class="p-4 m-1 border rounded">
+                            <h4>Eight-grid</h4>
+                            <img src="img/8gird.png" alt="">
+                        </li>
+                        <li class="p-4 m-1 border rounded">
+                            <h4>Water Jug</h4>
+                            <img src="img/water.jpg" alt="">
+                        </li>
+                    </ul>
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <footer class="bg-dark text-center text-white">
+            <div class="container p-4 pb-0">
+                <i>"Machine Intelligence is the last invention that humanity will ever need to make."</i>
+                <div class="container pt-2 pb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="2em" height="2em" viewBox="0 0 64 64"
+                        style=" fill:#fff;">
+                        <path
+                            d="M32 6C17.641 6 6 17.641 6 32c0 12.277 8.512 22.56 19.955 25.286-.592-.141-1.179-.299-1.755-.479V50.85c0 0-.975.325-2.275.325-3.637 0-5.148-3.245-5.525-4.875-.229-.993-.827-1.934-1.469-2.509-.767-.684-1.126-.686-1.131-.92-.01-.491.658-.471.975-.471 1.625 0 2.857 1.729 3.429 2.623 1.417 2.207 2.938 2.577 3.721 2.577.975 0 1.817-.146 2.397-.426.268-1.888 1.108-3.57 2.478-4.774-6.097-1.219-10.4-4.716-10.4-10.4 0-2.928 1.175-5.619 3.133-7.792C19.333 23.641 19 22.494 19 20.625c0-1.235.086-2.751.65-4.225 0 0 3.708.026 7.205 3.338C28.469 19.268 30.196 19 32 19s3.531.268 5.145.738c3.497-3.312 7.205-3.338 7.205-3.338.567 1.474.65 2.99.65 4.225 0 2.015-.268 3.19-.432 3.697C46.466 26.475 47.6 29.124 47.6 32c0 5.684-4.303 9.181-10.4 10.4 1.628 1.43 2.6 3.513 2.6 5.85v8.557c-.576.181-1.162.338-1.755.479C49.488 54.56 58 44.277 58 32 58 17.641 46.359 6 32 6zM33.813 57.93C33.214 57.972 32.61 58 32 58 32.61 58 33.213 57.971 33.813 57.93zM37.786 57.346c-1.164.265-2.357.451-3.575.554C35.429 57.797 36.622 57.61 37.786 57.346zM32 58c-.61 0-1.214-.028-1.813-.07C30.787 57.971 31.39 58 32 58zM29.788 57.9c-1.217-.103-2.411-.289-3.574-.554C27.378 57.61 28.571 57.797 29.788 57.9z">
+                        </path>
+                    </svg>
+                </div>
+                <a class="text-white" href="https://shivanshu-semwal.github.io/ai-games"> ai-games</a>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- jquery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <!-- popper -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+        integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
