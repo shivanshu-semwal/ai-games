@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-jug-problem</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"> </script>
+</head>
+
+<body>
+
+    <div>
+        <h2>Transitions Available</h2>
+        <p>
+            Jug one capacity \( = c_1 \), and jug two capacity \( = c_2 \).
+        <ol>
+            <li>\( (x, y) \Rightarrow (c_1, y)\) <br> \(\text{ Conditions: } x \ne c_1\) , fill jug one</li>
+            <li>\( (x, y) \Rightarrow (x, c_2)\) <br> \(\text{ Conditions: } y \ne c_2\) , fill jug two</li>
+            <li>\( (x, y) \Rightarrow (0, y)\) <br> \(\text{ Conditions: } x \ne 0\) , empty jug one</li>
+            <li>\( (x, y) \Rightarrow (x, y)\) <br> \(\text{ Conditions: } y \ne 0\) , empty jug two</li>
+            <li>\( (x, y) \Rightarrow (x+y, 0)\) <br> \(\text{ Conditions: } x+y < c_1 \text{ and } y \ne 0\) , empty
+                    jug two in jug one</li>
+            <li>\( (x, y) \Rightarrow (0, x+y)\) <br> \(\text{ Conditions: } x+y < c_2 \text{ and } x \ne 0\) , empty
+                    jug one in jug two</li>
+            <li>\( (x, y) \Rightarrow (c_1, y - (c_1 - x))\) <br> \(\text{ Conditions: } x+y > c_1\) , pour water form
+                jug two to jug one till it is full</li>
+            <li>\( (x, y) \Rightarrow (x - (c_2 - y) , c_2)\) <br> \(\text{ Conditions: } x+y > c_2\) , pour water form
+                jug one to jug two till it is full</li>
+        </ol>
+        </p>
+    </div>
+
+    <div id="inputval">
+        <label for="c1">Capacity of Jug 1: </label>
+        <input type="text" pattern="\d*" required id="c1" name="c1" placeholder="Capacity of jug 1"> <br>
+        <label for="c1">Capacity of Jug 2: </label>
+        <input type="text" pattern="\d*" required id="c2" name="c2" placeholder="Capacity of jug 2">
+        <br>
+        <label for="initial">Initial State: </label>
+        <input type="text" pattern="\d*" required id="i01" name="i01" placeholder="Initial value in jug 1">
+        <input type="text" pattern="\d*" required id="i02" name="i02" placeholder="Initial value in jug 2">
+        <br>
+        <label for="final">Final State: </label>
+        <input type="text" pattern="\d*" required id="i11" name="i11" placeholder="Final value in jug 1">
+        <input type="text" pattern="\d*" required id="i12" name="i12" placeholder="Final value in jug 2">
+        <br>
+        <input type="submit" onclick="start()" value="Start!">
+    </div>
+
+    <div id="graph">
+
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script>
+        var c = 1000;
+        function makeGraph(treeData) {
+            var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+                width = 960 - margin.left - margin.right,
+                height = 1000 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            if (document.getElementById("graph")) {
+                document.getElementById("graph").innerHTML = "";
+            }
+            var svg = d3.select("#graph").append("svg")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.right + "," + margin.bottom + ")");
+
+            var i = 0,
+                duration = 750,
+                root;
+
+            // declares a tree layout and assigns the size
+            var treemap = d3.tree().size([height, width]);
+
+            // Assigns parent, children, height, depth
+            root = d3.hierarchy(treeData, function (d) { return d.children; });
+            root.x0 = width / 2;
+            root.y0 = 0;
+
+            // Collapse after the second level
+            // root.children.forEach(collapse);
+
+            update(root);
+
+            // Collapse the node and all it's children
+            function collapse(d) {
+                if (d.children) {
+                    d._children = d.children
+                    d._children.forEach(collapse)
+                    d.children = null
+                }
+            }
+
+            function update(source) {
+
+                // Assigns the x and y position for the nodes
+                var treeData = treemap(root);
+
+                // Compute the new tree layout.
+                var nodes = treeData.descendants(),
+                    links = treeData.descendants().slice(1);
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function (d) {
+                    d.y = d.depth * 180
+                });
+
+                // ****************** Nodes section ***************************
+
+                // Update the nodes...
+                var node = svg.selectAll('g.node')
+                    .data(nodes, function (d) {
+                        return d.id || (d.id = ++i);
+                    });
+
+                // Enter any new modes at the parent's previous position.
+                var nodeEnter = node.enter().append('g')
+                    .attr('class', 'node')
+                    .attr("transform", function (d) {
+                        return "translate(" + source.x0 + "," + source.y0 + ")";
+                    })
+                    .on('click', click);
+
+                // Add Circle for the nodes
+                nodeEnter.filter(function (d) {
+                    return (!d.data.type || d.data.type !== 'data');
+                }).append('circle')
+                    .attr('class', 'node')
+                    .attr('r', 1e-6)
+                    .style("fill", function (d) {
+                        return d._children ? "lightsteelblue" : "#fff";
+                    });
+
+                nodeEnter.filter(function (d) {
+                    return (d.data.type && d.data.type === 'data');
+                }).append('rect')
+                    .attr('class', 'node')
+                    .attr('width', 20)
+                    .attr('height', 20)
+                    .attr('y', -10)
+                    .attr('x', -10)
+                    .style("fill", function (d) {
+                        return d._children ? "lightsteelblue" : "#fff";
+                    });
+
+                // Add labels for the nodes
+                nodeEnter.append('text')
+                    .attr("dy", "0em")
+                    .attr("x", function (d) {
+                        return d.children || d._children ? 13 : 13;
+                    })
+                    .attr("text-anchor", function (d) {
+                        return d.children || d._children ? "start" : "start";
+                    })
+                    .text(function (d) {
+                        return d.data.name;
+                    });
+
+                // UPDATE
+                var nodeUpdate = nodeEnter.merge(node);
+
+                // Transition to the proper position for the node
+                nodeUpdate.transition()
+                    .duration(duration)
+                    .attr("transform", function (d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+
+                // Update the node attributes and style
+                nodeUpdate.select('circle.node')
+                    .attr('r', 10)
+                    .style("fill", function (d) {
+                        return d._children ? "lightsteelblue" : "#fff";
+                    })
+                    .attr('cursor', 'pointer');
+
+
+                // Remove any exiting nodes
+                var nodeExit = node.exit().transition()
+                    .duration(duration)
+                    .attr("transform", function (d) {
+                        return "translate(" + source.x + "," + source.y + ")";
+                    })
+                    .remove();
+
+                // On exit reduce the node circles size to 0
+                nodeExit.select('circle')
+                    .attr('r', 1e-6);
+
+                // On exit reduce the opacity of text labels
+                nodeExit.select('text')
+                    .style('fill-opacity', 1e-6);
+
+                // ****************** links section ***************************
+
+                // Update the links...
+                var link = svg.selectAll('g.link')
+                    .data(links, function (d) {
+                        return d.id;
+                    });
+
+                // Enter any new links at the parent's previous position.
+                var linkEnter = link.enter().insert('g', 'g')
+                    .attr("class", "link");
+
+                linkEnter.append('path')
+                    .attr('d', function (d) {
+                        var o = {
+                            x: source.x0,
+                            y: source.y0
+                        }
+                        return diagonal(o, o)
+                    })
+                // .on("mouseover", function () {
+                //     d3.select(this.parentNode).select("text").attr("opacity", 1);
+                // })
+                // .on("mouseleave", function () {
+                //     d3.select(this.parentNode).select("text").attr("opacity", 0);
+                // })
+
+                linkEnter.append('text')
+                    .attr("class", "linkLabels")
+                    .text(function (d, i) {
+                        if (d.parent && d.parent.children.length >= 1) {
+                            if (!d.parent.index) d.parent.index = 0;
+                            return d.data.linkname;
+                        }
+                    })
+                    .attr("opacity", 0);
+                // .attr('dy', "-1em");
+
+                // UPDATE
+                var linkUpdate = linkEnter.merge(link);
+
+                // Transition back to the parent element position
+                linkUpdate.select('path').transition()
+                    .duration(duration)
+                    .attr('d', function (d) {
+                        return diagonal(d, d.parent)
+                    });
+
+                linkUpdate.select('text').transition()
+                    .duration(duration)
+                    .attr('transform', function (d) {
+                        if (d.parent) {
+                            return 'translate(' + ((d.parent.x + d.x) / 2) + ',' + ((d.parent.y + d.y) / 2) + ')'
+                        }
+                    });
+
+                linkUpdate.select('text').transition()
+                    .delay(duration)
+                    .attr("opacity", 1);
+
+                // Remove any exiting links
+                link.exit().each(function (d) {
+                    d.parent.index = 0;
+                })
+
+                var linkExit = link.exit()
+                    .transition()
+                    .duration(duration);
+
+                linkExit.select('path')
+                    .attr('d', function (d) {
+                        var o = {
+                            x: source.x,
+                            y: source.y
+                        }
+                        return diagonal(o, o)
+                    })
+
+                linkExit.select('text')
+                    .style('opacity', 0);
+
+                linkExit.remove();
+
+                // Store the old positions for transition.
+                nodes.forEach(function (d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+
+                // Creates a curved (diagonal) path from parent to the child nodes
+                function diagonal(s, d) {
+                    path = `M ${s.x} ${s.y}
+                            C ${(s.x + d.x) / 2} ${d.y},
+                            ${(s.x + d.x) / 2} ${s.y},
+                                ${d.x} ${d.y}`
+                    return path
+                }
+
+                // Toggle children on click.
+                function click(d) {
+                    if (d.children) {
+                        d._children = d.children;
+                        d.children = null;
+                    } else {
+                        d.children = d._children;
+                        d._children = null;
+                    }
+                    update(d);
+                }
+            }
+        }
+        function start() {
+
+            ans = false;
+
+            var initial = [
+                Number(document.getElementById('i01').value),
+                Number(document.getElementById('i02').value)
+            ];
+            var final = [
+                Number(document.getElementById('i11').value),
+                Number(document.getElementById('i12').value)
+            ];
+            var c1 = Number(document.getElementById('c1').value);
+            var c2 = Number(document.getElementById('c2').value);
+
+            var transforms = [
+                [(state) => state[0] != c1, (state) => [c1, state[1]]],
+                [(state) => state[1] != c2, (state) => [state[0], c2]],
+                [(state) => state[0] != 0, (state) => [0, state[1]]],
+                [(state) => state[1] != 0, (state) => [state[0], 0]],
+                [(state) => state[0] + state[1] < c1 && state[1] != 0, (state) => [state[0] + state[1], 0]],
+                [(state) => state[0] + state[1] < c2 && state[0] != 0, (state) => [0, state[0] + state[1]]],
+                [(state) => state[0] + state[1] > c1, (state) => [c1, state[1] - (c1 - state[0])]],
+                [(state) => state[0] + state[1] > c2, (state) => [state[0] - (c2 - state[1]), c2]]
+            ]
+
+            console.log("c1: " + c1 + " c2: " + c2 + " initial: " + initial + " final: " + final);
+
+            var treeData = { "name": initial.toString(), "linkname": "null", "children": [] };
+            var visited = {};
+            var queue = [initial];
+            var queue2 = [treeData];
+
+            while (queue.length !== 0 && c != 0) {
+                var t = queue.shift();
+                var tt = queue2.shift();
+                if (visited[t.toString()]) {
+                    continue;
+                }
+                visited[t.toString()] = true;
+                if (t.toString() === final.toString()) {
+                    ans = true;
+                    console.log("done!!");
+                    break;
+                }
+                console.log("*" + t[0] + " and " + t[1]);
+                for (var i = 0; i < transforms.length; i++) {
+                    transform = transforms[i];
+
+                    if (transform[0](t)) {
+                        if (visited[transform[1](t).toString()] !== true) {
+                            var temp = transform[1](t);
+                            console.log("---------" + transform[1](t)[0] + " " + transform[1](t)[1]);
+
+                            queue.push(temp);
+                            tt["children"].push(
+                                {
+                                    "name": temp.toString(),
+                                    "linkname": (i + 1).toString(),
+                                    "children": []
+                                }
+                            );
+                            queue2.push(tt["children"].at(-1));
+
+                            if (final.toString() === temp.toString()) {
+                                ans = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                c--;
+                if (ans) break;
+            }
+            console.log(treeData);
+            if (ans) {
+                makeGraph(treeData);
+            } else {
+                alert("Solution don't exist");
+            }
+        }
+    </script>
+</body>
+
+</html>
